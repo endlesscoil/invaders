@@ -1,6 +1,5 @@
 <InvadersGame>:
     test_invader: test_invader
-    test_bullet: test_bullet
     player_ship: player_ship
 
 
@@ -17,14 +16,6 @@
         center_x: root.center_x
         center_y: 0 + self.height
 
-    Bullet:
-        id: test_bullet
-        width: 5
-        height: 5
-        center_x: root.center_x
-        center_y: root.center_y * 0.66
-
-        
 <Invader>:
     canvas:
         Ellipse:
@@ -40,6 +31,8 @@
             source: self.image
 
 <Bullet>:
+    size: 5, 5
+
     canvas:
         Ellipse:
             pos: self.pos
