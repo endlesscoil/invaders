@@ -22,6 +22,11 @@ class Ship(Widget):
         if self.move_direction != 0:
             self.center_x += self.move_direction * 5
 
+            if self.x <= 0:
+                self.x = 0
+            elif self.x + self.width >= self.parent.width:
+                self.x = self.parent.width - self.width
+
         return True
 
     def fire(self, velocity=(0, 5)):
