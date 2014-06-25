@@ -15,7 +15,16 @@ class InvadersGame(Widget):
         self._entities = []
 
         self._add_entity(self.player_ship, skip_widget=True)
-        self._add_entity(self.test_invader, skip_widget=True)
+
+        for i in range(10):
+            for j in range(5):
+                invader = Invader()
+                invader.x = (self.width - (invader.width * 10)) / 2 + i * invader.width
+                invader.y = self.height - (j * invader.height)
+
+                invader.move_direction = 1
+
+                self._add_entity(invader)
 
         self._keyboard = Window.request_keyboard(self._keyboard_closed, self)
         self._keyboard.bind(on_key_down=self._on_key_down, on_key_up=self._on_key_up)

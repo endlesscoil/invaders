@@ -6,12 +6,17 @@ from kivy.properties import NumericProperty, ReferenceListProperty, ObjectProper
 from kivy.vector import Vector
 
 
+class Fleet(object):
+    pass
+
+
 class Invader(Widget):
     image = StringProperty('images/invader.jpg')
+    last_move_direction = NumericProperty(0)
     move_direction = NumericProperty(0)
 
     MOVE_TIME = 0.5
-    MOVE_STEP = 5
+    MOVE_STEP = 10
 
     def __init__(self, **kwargs):
         super(Invader, self).__init__(**kwargs)
@@ -29,10 +34,11 @@ class Invader(Widget):
                 self.center_y -= self.MOVE_STEP
 
                 # After moving down switch back to moving horizontally.
-                if self.center_x < self.parent.width / 2:
-                    self.move_direction = 1
-                else:
-                    self.move_direction = -1
+                self.last_move_direction, self.move_direction = self.move_direction, -self.last_move_direction
+                # if self.center_x < self.parent.width / 2:
+                #     self.last_move_direction, self.move_direction = self.move_direction, 1
+                # else:
+                #     self.last_move_direction, self.move_direction = self.move_direction, -1
 
             else:
                 # Move left or right.
@@ -41,11 +47,11 @@ class Invader(Widget):
                 # Reset position and direction if out of bounds.
                 if self.x < 0:
                     self.x = 0
-                    self.move_direction = 0
+                    self.last_move_direction, self.move_direction = self.move_direction, 0
 
                 elif self.x + self.width >= self.parent.width:
                     self.x = self.parent.width - self.width
-                    self.move_direction = 0
+                    self.last_move_direction, self.move_direction = self.move_direction, 0
             
             self.last_update, self.elapsed = self.elapsed, 0
 
