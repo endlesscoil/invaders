@@ -1,4 +1,5 @@
 import sys
+import random
 
 from kivy.uix.widget import Widget
 from kivy.core.window import Window
@@ -120,6 +121,12 @@ class InvadersGame(Widget):
                 self.player_ship.move_direction = -1
             elif keycode[1] == 'right':
                 self.player_ship.move_direction = 1
+
+        elif keycode[1] == 'z':
+            invader = Invader()
+            invader.center = (random.randint(0, self.width), random.randint(self.height * 0.66, self.height))
+
+            self._add_entity(invader)
 
         return True
 
