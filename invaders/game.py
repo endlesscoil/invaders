@@ -10,7 +10,21 @@ from kivy.logger import Logger
 class Invader(Widget):
     image = StringProperty('images/invader.jpg')
 
-    def update(self):
+    MOVE_TIME = 3
+
+    def __init__(self, **kwargs):
+        super(Invader, self).__init__(**kwargs)
+
+        self.last_update = None
+        self.elapsed = 0
+        self.collision_detected = False
+
+    def update(self, dt):
+        self.elapsed += dt
+        if self.elapsed > self.MOVE_TIME or self.last_update is None:
+            self.center_y -= 10
+            self.last_update, self.elapsed = self.elapsed, 0
+
         return True
 
 
@@ -18,7 +32,12 @@ class Ship(Widget):
     image = StringProperty('images/ship.jpg')
     move_direction = NumericProperty(0)
 
-    def update(self):
+    def __init__(self, **kwargs):
+        super(Ship, self).__init__(**kwargs)
+
+        self.collision_detected = False
+
+    def update(self, dt):
         if self.move_direction != 0:
             self.center_x += self.move_direction * 5
 
@@ -44,12 +63,19 @@ class Bullet(Widget):
     velocity_y = NumericProperty(0)
     velocity = ReferenceListProperty(velocity_x, velocity_y)
 
-    def update(self):
+    def __init__(self, **kwargs):
+        super(Bullet, self).__init__(**kwargs)
+
+        self.collision_detected = False
+
+    def update(self, dt):
         self.pos = Vector(*self.velocity) + self.pos
 
         # Check for collisions
         for e in self.parent._entities:
             if e is not self and e.collide_widget(self):
+                e.collision_detected = True
+
                 return False
 
         # Check if we've gone off-screen
@@ -75,8 +101,8 @@ class InvadersGame(Widget):
 
     def update(self, dt):
         for e in self._entities[:]:
-            status = e.update()
-            if not status:
+            status = e.update(dt)
+            if not status or e.collision_detected:
                 self._remove_entity(e)
 
     def _on_key_down(self, keyboard, keycode, text, modifiers):
