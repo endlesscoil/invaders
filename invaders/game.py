@@ -5,7 +5,7 @@ from kivy.uix.widget import Widget
 from kivy.core.window import Window
 from kivy.logger import Logger
 
-from .entities import Invader
+from .entities import Invader, Fleet
 
 class InvadersGame(Widget):
     def __init__(self):
@@ -15,21 +15,14 @@ class InvadersGame(Widget):
         self._entities = []
 
         self._add_entity(self.player_ship, skip_widget=True)
-
-        for i in range(10):
-            for j in range(5):
-                invader = Invader()
-                invader.x = (self.width - (invader.width * 10)) / 2 + i * invader.width
-                invader.y = self.height - (j * invader.height)
-
-                invader.move_direction = 1
-
-                self._add_entity(invader)
+        self._init_fleet()
 
         self._keyboard = Window.request_keyboard(self._keyboard_closed, self)
         self._keyboard.bind(on_key_down=self._on_key_down, on_key_up=self._on_key_up)
 
     def update(self, dt):
+        self.fleet.update(dt)
+
         for e in self._entities[:]:
             status = e.update(dt)
             if not status or e.collision_detected:
@@ -66,6 +59,15 @@ class InvadersGame(Widget):
     def _keyboard_closed(self):
         self._keyboard.unbind(on_key_down=self._on_key_down)
         self._keyboard = None
+
+    def _init_fleet(self):
+        self.fleet = Fleet(rows=5, cols=10)
+        self.fleet.pos = ((self.width - self.fleet.width) / 2 + 50, 0)
+        self.add_widget(self.fleet)
+
+        self.fleet.create_fleet()
+        for s in self.fleet.ships:
+            self._add_entity(s)
 
     def _add_entity(self, entity, skip_widget=False):
         self._entities.append(entity)
