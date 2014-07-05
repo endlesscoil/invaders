@@ -1,5 +1,6 @@
 from kivy.uix.widget import Widget
 from kivy.core.window import Window
+from kivy.core.audio import SoundLoader
 from kivy.logger import Logger
 
 from kivy.properties import NumericProperty, ReferenceListProperty, ObjectProperty, ListProperty, StringProperty
@@ -125,6 +126,8 @@ class Ship(Widget):
         super(Ship, self).__init__(**kwargs)
 
         self.collision_detected = False
+        self._fire_sound = SoundLoader.load('sounds/player_fire.wav')
+        self._fire_sound.volume = 0.5
 
     def update(self, dt):
         if self.move_direction != 0:
@@ -144,6 +147,10 @@ class Ship(Widget):
         bullet.center_y = self.y + self.height + 5
         bullet.velocity = velocity
 
+        self._fire_sound.stop()
+        self._fire_sound.load()
+        self._fire_sound.play()
+
         return bullet
 
 
@@ -156,6 +163,8 @@ class Bullet(Widget):
         super(Bullet, self).__init__(**kwargs)
 
         self.collision_detected = False
+        self._explosion_sound = SoundLoader.load('sounds/explosion.wav')
+        self._explosion_sound.volumn = 0.5
 
     def update(self, dt):
         self.pos = Vector(*self.velocity) + self.pos
@@ -164,6 +173,7 @@ class Bullet(Widget):
         for e in self.parent._entities:
             if e is not self and e.collide_widget(self):
                 e.collision_detected = True
+                self._explosion_sound.play()
 
                 return False
 

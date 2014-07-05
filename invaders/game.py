@@ -4,6 +4,7 @@ import random
 from kivy.uix.widget import Widget
 from kivy.core.window import Window
 from kivy.logger import Logger
+from kivy.core.audio import SoundLoader
 
 from .entities import Invader, Fleet
 
@@ -19,6 +20,9 @@ class InvadersGame(Widget):
 
         self._keyboard = Window.request_keyboard(self._keyboard_closed, self)
         self._keyboard.bind(on_key_down=self._on_key_down, on_key_up=self._on_key_up)
+
+        self._music = SoundLoader.load('sounds/DST-DFear.mp3')
+        self._music.play()
 
     def update(self, dt):
         self.fleet.update(dt)
