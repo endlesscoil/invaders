@@ -36,7 +36,7 @@ class InvadersGame(Widget):
         #Logger.debug(keycode)
 
         if keycode[1] == 'escape':
-            sys.exit(1)
+            sys.exit(0)
 
         elif keycode[1] == 'spacebar':
             bullet = self.player_ship.fire()
